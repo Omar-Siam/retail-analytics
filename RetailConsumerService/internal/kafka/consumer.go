@@ -52,13 +52,13 @@ func (c *Consumer) ConsumeMessages() {
 		}
 	}()
 
-	<-c.ready // Wait till the consumer has been set up
+	<-c.ready
 	log.Println("Consumer running...")
 
 	wg.Wait()
 }
 
-// Implementing sarama.ConsumerGroupHandler interface methods
+// Below are sarama.ConsumerGroupHandler interface methods. Required.
 
 func (c *Consumer) Setup(sarama.ConsumerGroupSession) error {
 	close(c.ready)
