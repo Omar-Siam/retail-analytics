@@ -1,8 +1,11 @@
+// package main initializes and starts the HTTP server.
 package main
 
 import (
 	"RetailAnalytics/internal/handlers"
+	"RetailAnalytics/internal/kafka"
 	"errors"
+	"github.com/IBM/sarama"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -11,9 +14,23 @@ import (
 
 func main() {
 	const port = "8080"
+	const brokerAddress = "localhost:9092"
+
+	config := sarama.NewConfig()
+	config.Producer.Return.Successes = true
+
+	producer, err := kafka.NewProducer([]string{brokerAddress}, config)
+	if err != nil {
+		log.Fatal("Failed to start Kafka producer:", err)
+	}
+	defer func() {
+		if err := producer.Close(); err != nil {
+			log.Printf("Failed to close Kafka producer: %v", err)
+		}
+	}()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/ingest", handlers.PostTransaction).Methods("POST")
+	r.HandleFunc("/ingest", handlers.PostTransaction(producer)).Methods("POST")
 
 	server := &http.Server{
 		Addr:         ":" + port,
@@ -23,7 +40,6 @@ func main() {
 	}
 
 	log.Printf("Starting server on port %s", port)
-
 	if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
 		log.Fatalf("Server failed: %v", err)
 	}
