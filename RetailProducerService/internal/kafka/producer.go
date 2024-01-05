@@ -1,15 +1,14 @@
 package kafka
 
 import (
-	"RetailAnalytics/internal/models"
+	"RetailAnalytics/RetailProducerService/internal/models"
 	"encoding/json"
 	"github.com/IBM/sarama"
 	"log"
 )
 
-const KafkaTopic = "test-topic"
+const TopicName = "test-topic-part"
 
-// Producer wraps a Sarama SyncProducer.
 type Producer struct {
 	sarama.SyncProducer
 }
@@ -31,11 +30,11 @@ func (p *Producer) PostTransaction(transaction models.Transaction) error {
 	}
 
 	msg := &sarama.ProducerMessage{
-		Topic: KafkaTopic,
+		Topic: TopicName,
 		Value: sarama.ByteEncoder(body),
 	}
 
 	partition, offset, err := p.SendMessage(msg)
-	log.Printf("Message is stored in topic(%s)/partition(%d)/offset(%d)\n", "test-topic", partition, offset)
+	log.Printf("Message is stored in topic(%s)/partition(%d)/offset(%d)\n", TopicName, partition, offset)
 	return err
 }

@@ -1,9 +1,8 @@
-// package main initializes and starts the HTTP server.
 package main
 
 import (
-	"RetailAnalytics/internal/handlers"
-	"RetailAnalytics/internal/kafka"
+	"RetailAnalytics/RetailProducerService/internal/handlers"
+	"RetailAnalytics/RetailProducerService/internal/kafka"
 	"errors"
 	"github.com/IBM/sarama"
 	"github.com/gorilla/mux"
@@ -18,6 +17,7 @@ func main() {
 
 	config := sarama.NewConfig()
 	config.Producer.Return.Successes = true
+	config.Producer.Partitioner = sarama.NewRoundRobinPartitioner
 
 	producer, err := kafka.NewProducer([]string{brokerAddress}, config)
 	if err != nil {
