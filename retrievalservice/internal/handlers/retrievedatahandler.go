@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"RetailAnalytics/RetailDataRetrievalService/internal/repository"
+	"RetailAnalytics/retrievalservice/internal/repository"
 	"encoding/json"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"net/http"

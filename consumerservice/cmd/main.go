@@ -1,8 +1,8 @@
 package main
 
 import (
-	"RetailAnalytics/RetailConsumerService/internal/clients"
-	"RetailAnalytics/RetailConsumerService/internal/kafka"
+	"RetailAnalytics/consumerservice/internal/clients"
+	"RetailAnalytics/consumerservice/internal/kafka"
 	"log"
 )
 

@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"RetailAnalytics/RetailProducerService/internal/kafka"
-	"RetailAnalytics/RetailProducerService/internal/models"
+	"RetailAnalytics/producerservice/internal/kafka"
+	"RetailAnalytics/producerservice/internal/models"
 	"encoding/json"
 	"log"
 	"net/http"

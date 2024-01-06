@@ -1,8 +1,8 @@
 package main
 
 import (
-	"RetailAnalytics/RetailDataRetrievalService/internal/client"
-	"RetailAnalytics/RetailDataRetrievalService/internal/handlers"
+	"RetailAnalytics/retrievalservice/internal/client"
+	"RetailAnalytics/retrievalservice/internal/handlers"
 	"errors"
 	"github.com/gorilla/mux"
 	"log"

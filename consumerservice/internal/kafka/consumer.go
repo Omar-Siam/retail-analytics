@@ -1,7 +1,7 @@
 package kafka
 
 import (
-	"RetailAnalytics/RetailConsumerService/internal/repository"
+	"RetailAnalytics/consumerservice/internal/repository"
 	"context"
 	"encoding/json"
 	"fmt"
