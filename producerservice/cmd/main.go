@@ -1,8 +1,8 @@
 package main
 
 import (
-	"RetailAnalytics/RetailProducerService/internal/handlers"
-	"RetailAnalytics/RetailProducerService/internal/kafka"
+	"RetailAnalytics/producerservice/internal/handlers"
+	"RetailAnalytics/producerservice/internal/kafka"
 	"errors"
 	"github.com/IBM/sarama"
 	"github.com/gorilla/mux"

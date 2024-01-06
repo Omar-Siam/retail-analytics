@@ -1,7 +1,7 @@
 package kafka
 
 import (
-	"RetailAnalytics/RetailProducerService/internal/models"
+	"RetailAnalytics/producerservice/internal/models"
 	"encoding/json"
 	"github.com/IBM/sarama"
 	"log"
