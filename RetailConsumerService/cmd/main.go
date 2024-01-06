@@ -1,6 +1,7 @@
 package main
 
 import (
+	"RetailAnalytics/RetailConsumerService/internal/clients"
 	"RetailAnalytics/RetailConsumerService/internal/kafka"
 	"log"
 )
@@ -9,8 +10,11 @@ func main() {
 	const brokerAddress = "localhost:9092"
 	const consumerGroupID = "test-consumer-group"
 	const topic = "test-topic-part"
+	const bucketName = "test-s3-bucket"
 
-	consumer, err := kafka.NewConsumer([]string{brokerAddress}, consumerGroupID, topic)
+	s3client := clients.NewS3Client()
+
+	consumer, err := kafka.NewConsumer([]string{brokerAddress}, consumerGroupID, topic, s3client, bucketName)
 	if err != nil {
 		log.Fatalln("Failed to start consumer:", err)
 	}
