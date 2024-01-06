@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func PutJSONToS3(s3Client *s3.S3, bucketName, objectKey string, jsonObject map[string]any) error {
+func PutObjectToS3(s3Client *s3.S3, bucketName, objectKey string, jsonObject map[string]any) error {
 	jsonData, err := json.Marshal(jsonObject)
 	if err != nil {
 		return err

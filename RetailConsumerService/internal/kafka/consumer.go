@@ -90,7 +90,7 @@ func (c *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim saram
 		}
 
 		objectKey := fmt.Sprintf("%s/%d/%s.json", message.Topic, message.Partition, message.Timestamp.Format(time.RFC3339))
-		err = repository.PutJSONToS3(c.s3Client, c.bucketName, objectKey, jsonObject)
+		err = repository.PutObjectToS3(c.s3Client, c.bucketName, objectKey, jsonObject)
 		if err != nil {
 			log.Printf("Error uploading to S3: %s", err)
 			continue
