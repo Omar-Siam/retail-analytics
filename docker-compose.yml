@@ -1,5 +1,20 @@
 version: '3'
 services:
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+    environment:
+      SERVICES: lambda,sqs,s3,apigateway
+      DATA_DIR: /tmp/localstack/data
+      PROVIDER_OVERRIDE_S3: asf
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack
+    networks:
+      - localstack-net
+
   zookeeper:
     image: wurstmeister/zookeeper
     ports:
@@ -15,18 +30,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  minio:
-    image: minio/minio
-    command: minio server --console-address ":9001" /data
-    volumes:
-      - minio_data:/data
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    environment:
-      MINIO_ROOT_USER: minioaccesskey
-      MINIO_ROOT_PASSWORD: miniosecretkey
-
-volumes:
-  minio_data:
+networks:
+  localstack-net:
 
