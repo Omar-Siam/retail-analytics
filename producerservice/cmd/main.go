@@ -1,21 +1,20 @@
 package main
 
 import (
-	"RetailAnalytics/producerservice/internal/handlers"
+	"RetailAnalytics/producerservice/internal/clients"
 	"RetailAnalytics/producerservice/internal/kafka"
-	"errors"
+	"RetailAnalytics/producerservice/internal/repository"
 	"github.com/IBM/sarama"
-	"github.com/gorilla/mux"
 	"log"
-	"net/http"
 	"time"
 )
 
 func main() {
-	const port = "8080"
 	const brokerAddress = "localhost:9092"
 
 	config := sarama.NewConfig()
+	sqsClient := clients.NewSQSClient()
+
 	config.Producer.Return.Successes = true
 	config.Producer.Partitioner = sarama.NewRoundRobinPartitioner
 
@@ -29,18 +28,22 @@ func main() {
 		}
 	}()
 
-	r := mux.NewRouter()
-	r.HandleFunc("/ingest", handlers.PostTransaction(producer)).Methods("POST")
+	for {
+		msgs, err := repository.PollSQS(sqsClient)
+		if err != nil {
+			log.Printf("Failed to poll from SQS: %v", err)
+			continue
+		}
 
-	server := &http.Server{
-		Addr:         ":" + port,
-		Handler:      r,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 15 * time.Second,
+		for _, msg := range msgs {
+			if err := producer.PostTransaction(msg); err != nil {
+				log.Printf("Failed to send to Kafka: %v", err)
+			} else {
+				// Delete message from SQS queue after successful send to Kafka
+				repository.DeleteMessageFromSQS(sqsClient, msg)
+			}
+		}
+		time.Sleep(1 * time.Second) // Poll interval
 	}
 
-	log.Printf("Starting server on port %s", port)
-	if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-		log.Fatalf("Server failed: %v", err)
-	}
 }

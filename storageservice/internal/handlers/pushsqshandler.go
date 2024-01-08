@@ -1,15 +1,15 @@
 package handlers
 
 import (
-	"RetailAnalytics/producerservice/internal/kafka"
-	"RetailAnalytics/producerservice/internal/models"
+	"RetailAnalytics/storageservice/internal/models"
+	"RetailAnalytics/storageservice/internal/repository"
 	"encoding/json"
+	"github.com/aws/aws-sdk-go/service/sqs"
 	"log"
 	"net/http"
 )
 
-// PostTransaction handles the POST request to create a new transaction.
-func PostTransaction(producer *kafka.Producer) http.HandlerFunc {
+func PostToSQSHandler(queue *sqs.SQS) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var transaction models.Transaction
 		if err := json.NewDecoder(r.Body).Decode(&transaction); err != nil {
@@ -17,9 +17,9 @@ func PostTransaction(producer *kafka.Producer) http.HandlerFunc {
 			return
 		}
 
-		if err := producer.PostTransaction(transaction); err != nil {
-			log.Printf("Failed to send message: %v", err)
-			http.Error(w, "Failed to send message", http.StatusInternalServerError)
+		if err := repository.SendMessageToSQS(queue, transaction); err != nil {
+			log.Printf("Failed to add to queue: %v", err)
+			http.Error(w, "Failed to process", http.StatusInternalServerError)
 			return
 		}
 

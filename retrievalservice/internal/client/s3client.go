@@ -10,8 +10,8 @@ import (
 
 func NewS3Client() *s3.S3 {
 	s3Config := &aws.Config{
-		Credentials:      credentials.NewStaticCredentials("minioaccesskey", "miniosecretkey", ""),
-		Endpoint:         aws.String("http://localhost:9000"),
+		Credentials:      credentials.NewStaticCredentials("mock_access_key", "mock_secret_key", ""),
+		Endpoint:         aws.String("http://localhost:4566"),
 		Region:           aws.String("us-east-1"),
 		DisableSSL:       aws.Bool(true),
 		S3ForcePathStyle: aws.Bool(true),

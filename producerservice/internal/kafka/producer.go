@@ -1,9 +1,8 @@
 package kafka
 
 import (
-	"RetailAnalytics/producerservice/internal/models"
-	"encoding/json"
 	"github.com/IBM/sarama"
+	"github.com/aws/aws-sdk-go/service/sqs"
 	"log"
 )
 
@@ -23,18 +22,13 @@ func NewProducer(brokers []string, config *sarama.Config) (*Producer, error) {
 }
 
 // PostTransaction sends a transaction to Kafka.
-func (p *Producer) PostTransaction(transaction models.Transaction) error {
-	body, err := json.Marshal(transaction)
-	if err != nil {
-		return err
-	}
-
-	msg := &sarama.ProducerMessage{
+func (p *Producer) PostTransaction(msg *sqs.Message) error {
+	msgkafka := &sarama.ProducerMessage{
 		Topic: TopicName,
-		Value: sarama.ByteEncoder(body),
+		Value: sarama.StringEncoder(*msg.Body),
 	}
 
-	partition, offset, err := p.SendMessage(msg)
+	partition, offset, err := p.SendMessage(msgkafka)
 	log.Printf("Message is stored in topic(%s)/partition(%d)/offset(%d)\n", TopicName, partition, offset)
 	return err
 }
