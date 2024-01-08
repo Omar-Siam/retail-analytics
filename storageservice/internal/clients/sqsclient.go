@@ -4,11 +4,11 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/sqs"
 	"log"
 )
 
-func NewS3Client() *s3.S3 {
+func NewSQSClient() *sqs.SQS {
 	s3Config := &aws.Config{
 		Credentials:      credentials.NewStaticCredentials("mock_access_key", "mock_secret_key", ""),
 		Endpoint:         aws.String("http://localhost:4566"),
@@ -22,5 +22,5 @@ func NewS3Client() *s3.S3 {
 		log.Fatalf("Failed to create session: %s", err)
 	}
 
-	return s3.New(newSession)
+	return sqs.New(newSession)
 }
